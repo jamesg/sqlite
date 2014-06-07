@@ -16,6 +16,7 @@ For example, take the following C code.
     }
 
 In C++, the structure may be defined as:
+
     struct output_struct_type : json::map_accessor
     {
         output_struct_type(json::object& o) :
@@ -27,6 +28,7 @@ In C++, the structure may be defined as:
     };
 
 The struct can be adapted for use as a Boost Fusion container:
+
     BOOST_FUSION_ADAPT_STRUCT(
         output_struct_type,
         (std::string&, name())
@@ -35,6 +37,7 @@ The struct can be adapted for use as a Boost Fusion container:
         )
 
 The SQL SELECT statement can now be executed using the select function in the SQLite library.
+
     json::list;
     sqlite::select<output_struct_type>(
         connection,
@@ -48,6 +51,7 @@ from the template parameter to sqlite::select to bind values from the query
 result to the correct JSON object keys.
 
 Now that the data types are defined, it is easy to insert data as well.
+
     sqlite::insert(
         "table_name",
         { "name", "location" },
@@ -57,6 +61,7 @@ Now that the data types are defined, it is easy to insert data as well.
 
 The library also provides a function for devoid queries (queries that do not
 produce a result).  Parameters can still be bound to placeholders in the query.
+
     sqlite::devoid(
         "DELETE FROM table_name WHERE location = ? ",
         boost::fusion::vector<std::string>("London"),
