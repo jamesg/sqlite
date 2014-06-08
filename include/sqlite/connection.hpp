@@ -8,6 +8,8 @@
 
 #include <string>
 
+#include <boost/utility.hpp>
+
 #include <sqlite3.h>
 
 namespace sqlite
@@ -15,7 +17,7 @@ namespace sqlite
     /*
      * Resource-managing class for connections to SQLite database files.
      */
-    class connection
+    class connection : boost::noncopyable
     {
     public:
         /*
@@ -27,7 +29,7 @@ namespace sqlite
          * exception if the connection could not be established.
          */
         connection(std::string filename);
-        connection(const connection& o);
+        connection(connection&& o);
         ~connection();
         /*
          * Returns the internal SQLite handle representing the database

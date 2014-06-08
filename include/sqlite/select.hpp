@@ -34,16 +34,20 @@ namespace sqlite
             )
     {
         sqlite3_stmt *stmt = nullptr;
-        if( sqlite3_prepare(
+        if(
+                sqlite3_prepare(
                     db.handle(),
                     query.c_str(),
                     query.length(),
                     &stmt,
                     nullptr
-                    ) != SQLITE_OK )
+                    ) != SQLITE_OK
+                )
         {
-            std::cerr << "Query: " << query << std::endl;
-            throw std::runtime_error("Preparing SQLite statement for select");
+            std::ostringstream oss;
+            oss << "error in SQLite select; query: " << query <<
+                " SQLite error: " << sqlite3_errmsg(db.handle()) << std::endl;
+            throw std::runtime_error(oss.str());
         }
 
         bind_values(params, stmt);
@@ -78,8 +82,10 @@ namespace sqlite
                     nullptr
                     ) != SQLITE_OK )
         {
-            std::cerr << "Query: " << query << std::endl;
-            throw std::runtime_error("Preparing SQLite statement for select");
+            std::ostringstream oss;
+            oss << "error in SQLite select; query: " << query <<
+                " SQLite error: " << sqlite3_errmsg(db.handle()) << std::endl;
+            throw std::runtime_error(oss.str());
         }
 
         bind_values(params, stmt);

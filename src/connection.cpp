@@ -5,7 +5,6 @@
 
 #include "sqlite/connection.hpp"
 
-#include <iostream>
 #include <stdexcept>
 
 sqlite::connection sqlite::connection::in_memory_database()
@@ -36,16 +35,19 @@ sqlite::connection::connection(std::string filename) :
     {
         throw std::runtime_error("enabling SQLite foreign key processing");
     }
+    sqlite3_finalize(stmt);
 }
 
-sqlite::connection::connection(const connection& o) :
+sqlite::connection::connection(connection&& o) :
     m_handle(o.m_handle)
 {
+    o.m_handle = nullptr;
 }
 
 sqlite::connection::~connection()
 {
-    sqlite3_close_v2(m_handle);
+    if(m_handle)
+        sqlite3_close_v2(m_handle);
 }
 
 sqlite3 *sqlite::connection::handle()
