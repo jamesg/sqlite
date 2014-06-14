@@ -7,7 +7,7 @@
 
 void sqlite::bind( int index, const std::string& s, sqlite3_stmt *stmt )
 {
-    if( sqlite3_bind_text(stmt, index, s.c_str(), -1, nullptr) != SQLITE_OK )
+    if( sqlite3_bind_text(stmt, index, s.c_str(), s.length(), nullptr) != SQLITE_OK )
         throw std::runtime_error("Unable to bind string in SQLite query");
 }
 void sqlite::bind( int index, const double value, sqlite3_stmt *stmt )

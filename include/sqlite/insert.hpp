@@ -36,10 +36,26 @@ namespace sqlite
     {
         std::string query_str = detail::insert_query_string(table, fields);
         sqlite3_stmt *stmt = nullptr;
-        sqlite3_prepare(conn.handle(), query_str.c_str(), -1, &stmt, nullptr);
+        if(
+            sqlite3_prepare(conn.handle(), query_str.c_str(), -1, &stmt, nullptr)
+            !=
+            SQLITE_OK
+          )
+        {
+            std::ostringstream oss;
+            oss << "error in SQLite insert (preparing); query: " << query_str <<
+                " SQLite error: " << sqlite3_errmsg(conn.handle());
+            throw std::runtime_error(oss.str());
+        }
         bind_values(fields, values, stmt);
-        sqlite::step(stmt);
-        sqlite3_finalize(stmt);
+        sqlite::step(stmt, conn);
+        if(sqlite3_finalize(stmt) != SQLITE_OK)
+        {
+            std::ostringstream oss;
+            oss << "error in SQLite insert (finalising); query: " << query_str <<
+                " SQLite error: " << sqlite3_errmsg(conn.handle());
+            throw std::runtime_error(oss.str());
+        }
         return detail::last_insert_rowid(conn);
     }
 

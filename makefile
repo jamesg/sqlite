@@ -16,6 +16,7 @@ OBJS=\
 	${OBJDIR}/bind_values.o \
 	${OBJDIR}/connection.o \
 	${OBJDIR}/get_column.o \
+	${OBJDIR}/row.o \
 	${OBJDIR}/step.o \
 	${OBJDIR}/transaction.o
 
