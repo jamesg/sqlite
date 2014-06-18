@@ -17,6 +17,7 @@
 #include "json/json.hpp"
 
 #include "sqlite/bind_values.hpp"
+#include "sqlite/connection.hpp"
 #include "sqlite/retrieve_values.hpp"
 
 namespace sqlite
