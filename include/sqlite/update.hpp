@@ -36,20 +36,29 @@ namespace sqlite
     {
         std::ostringstream query;
         query << "UPDATE " << table << " SET ";
-        // Fields
-        json::serialise(
-                fields,
-                [](
-                    const boost::optional<const char*>& name,
-                    std::ostream& os) {
-                    if( name ) os << *name << " = ?";
-                },
-                ", ",
-                query
+        auto query_fields = fields;
+        query_fields.erase(
+                std::remove_if(
+                    query_fields.begin(),
+                    query_fields.end(),
+                    [](const boost::optional<const char*>& field) -> bool {
+                        return !field;
+                    }
+                    ),
+                query_fields.end()
                 );
+        for(auto it = query_fields.begin(); it != query_fields.end(); ++it)
+        {
+            query << it->get() << " = ?";
+            if(std::next(it) == query_fields.end())
+                query << " ";
+            else
+                query << ", ";
+        }
         // ID field
         query << " WHERE " << T::id_field() << " = " << values.id();
 
+        std::cerr << "query " << query.str() << std::endl;
         sqlite3_stmt *stmt = nullptr;
         if( sqlite3_prepare(
                     db.handle(),
@@ -62,7 +71,7 @@ namespace sqlite
             std::cerr << "Query: " << query.str() << std::endl;
             throw std::runtime_error("Preparing SQLite statement for update");
         }
-        bind_values(values, stmt);
+        bind_values(fields, values, stmt);
 
         int step_ret = sqlite3_step(stmt);
         if( step_ret != SQLITE_OK && step_ret != SQLITE_DONE )
