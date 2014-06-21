@@ -47,18 +47,17 @@ namespace sqlite
                     ),
                 query_fields.end()
                 );
-        for(auto it = query_fields.begin(); it != query_fields.end(); ++it)
-        {
-            query << it->get() << " = ?";
-            if(std::next(it) == query_fields.end())
-                query << " ";
-            else
-                query << ", ";
-        }
+        json::serialise(
+            query_fields,
+            [](const boost::optional<const char*>& field, std::ostream& os) {
+                os << field.get() << " = ?";
+            },
+            ", ",
+            query
+            );
         // ID field
         query << " WHERE " << T::id_field() << " = " << values.id();
 
-        std::cerr << "query " << query.str() << std::endl;
         sqlite3_stmt *stmt = nullptr;
         if( sqlite3_prepare(
                     db.handle(),
