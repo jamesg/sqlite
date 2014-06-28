@@ -30,7 +30,7 @@ libsqlite.a:	${OBJS} ${JSON_LIBRARY}/libjson.a
 	ar rvs libsqlite.a ${OBJS}
 
 bin/main:	${JSON_LIBRARY}/libjson.a libsqlite.a src/main.cpp
-	${CXX} ${CPPFLAGS} src/main.cpp ${JSON_LIBRARY}/libjson.a libsqlite.a ${LIBS} -o $@
+	${CXX} ${CPPFLAGS} src/test/main.cpp ${JSON_LIBRARY}/libjson.a libsqlite.a ${LIBS} -o $@
 
 ${OBJDIR}/%.o : src/%.cpp
 	${CXX} ${CPPFLAGS} -Isrc $< -c -o $@
