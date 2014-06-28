@@ -47,7 +47,7 @@ sqlite::connection::connection(connection&& o) :
 sqlite::connection::~connection()
 {
     if(m_handle)
-        sqlite3_close_v2(m_handle);
+        sqlite3_close(m_handle);
 }
 
 sqlite3 *sqlite::connection::handle()
