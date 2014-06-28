@@ -12,11 +12,16 @@ if(SQLITE_JSON_LIBRARY_LOCATION)
 else()
     include_directories(json/include)
 endif()
-file(GLOB sources src/*.cpp)
+
+file(GLOB sources src/*.cpp src/detail/*.cpp)
 
 add_library(
     sqlite
     ${sources}
     )
 
+target_link_libraries(
+    sqlite
+    "sqlite3"
+    )
 
